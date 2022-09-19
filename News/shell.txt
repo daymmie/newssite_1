@@ -1,0 +1,121 @@
+
+(C) Корпорация Майкрософт (Microsoft Corporation). Все права защищены.
+
+Попробуйте новую кроссплатформенную оболочку PowerShell (https://aka.ms/pscore6)
+
+(venv) PS C:\Users\Dmitry\PycharmProjects\news_site> python manage.py makemigrations
+C:\Users\Dmitry\AppData\Local\Programs\Python\Python38\python.exe: can't open file 'manage.py': [Errno 2] No such file or directory
+(venv) PS C:\Users\Dmitry\PycharmProjects\news_site\News> python manage.py makemigrations
+Migrations for 'Newsapp':
+  Newsapp\migrations\0001_initial.py
+    - Create model Author
+    - Create model Category
+    - Create model Post
+    - Create model PostCategory
+    - Add field post_category to post
+    - Create model Comment
+(venv) PS C:\Users\Dmitry\PycharmProjects\news_site\News> python manage.py shell
+Python 3.8.0 (tags/v3.8.0:fa919fd, Oct 14 2019, 19:37:50) [MSC v.1916 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+
+>>> from News import *
+>>> from django.contrib.auth.models import User
+>>> casca_user = User.objects.create_user(username='casca', email='casca@gmail.com', password='casca')
+>>> from django.db import models
+>>> guts_user = User.objects.create_user(username='guts', email='guts@gmail.com', password='guts')
+
+
+
+
+>>> from Newsapp.models import *
+>>> casca = Author.objects.create(author_user=casca_user)
+>>> guts = Author.objects.create(author_user=guts_user)
+
+
+
+>>> Category.objects.create(category_name='Sport')
+<Category: Category object (1)>
+>>> Category.objects.create(category_name='Health')
+<Category: Category object (2)>
+>>> Category.objects.create(category_name='Football')
+<Category: Category object (3)>
+>>> Category.objects.create(category_name='Championship')
+<Category: Category object (4)>
+
+
+
+>>> Post.objects.create(post_author=casca, post_choice='AR', post_title='First Title', post_text='First post text')
+<Post: Post object (1)>
+>>> Post.objects.create(post_author=casca, post_choice='AR', post_title='Second', post_text='Second post text')
+<Post: Post object (2)>
+>>> Post.objects.create(post_author=guts, post_choice='NW', post_title='First News', post_text='First news text')
+<Post: Post object (3)>
+
+
+
+>>> Post.objects.get(id=1).post_category.add(Category.objects.get(id=1))
+>>> Post.objects.get(id=1).post_category.add(Category.objects.get(id=2))
+>>> Post.objects.get(id=2).post_category.add(Category.objects.get(id=2))
+>>> Post.objects.get(id=2).post_category.add(Category.objects.get(id=3))
+>>> Post.objects.get(id=3).post_category.add(Category.objects.get(id=3))
+>>> Post.objects.get(id=3).post_category.add(Category.objects.get(id=4))
+
+
+>>> Comment.objects.create(commend_post=Post.objects.get(id=1), comment_user=guts.author_user, comment_text='first_comment')
+>>> Comment.objects.create(commend_post=Post.objects.get(id=1), comment_user=guts.author_user, comment_text='second_comment')
+>>> Comment.objects.create(commend_post=Post.objects.get(id=2), comment_user=guts.author_user, comment_text='third_comment')
+
+
+>>> Post.objects.get(id=1).like()
+>>> Post.objects.get(id=1).like()
+>>> Post.objects.get(id=1).like()
+>>> Post.objects.get(id=2).like()
+>>> Post.objects.get(id=3).like()
+>>> Post.objects.get(id=3).like()
+>>> Post.objects.get(id=3).like()
+>>> Post.objects.get(id=3).like()
+>>> Post.objects.get(id=3).like()
+>>> Post.objects.get(id=3).like()
+>>> Post.objects.get(id=3).dislike()
+
+
+
+>>> Comment.objects.get(id=1).like()
+>>> Comment.objects.get(id=1).like()
+>>> Comment.objects.get(id=2).like()
+>>> Comment.objects.get(id=2).dislike()
+
+
+>>> Post.objects.get(id=3).post_rating
+5
+>>> Post.objects.get(id=2).post_rating
+1
+>>> Post.objects.get(id=1).post_rating
+3
+
+>>> Comment.objects.get(id=1).post_rating
+2
+>>> Comment.objects.get(id=2).post_rating
+0
+
+
+
+
+
+
+# Здесь у меня не получилось обновить рейтинг, выкидывало ошибку
+# как ее обработать я так и не понял. Но рейтинг обновился!
+#
+
+>>> casca.author_rating
+0
+>>> guts.author_rating
+0
+
+
+
+
+>>> Post.objects.get(id=1).post_date
+datetime.datetime(2022, 9, 19, 13, 10, 45, 676687, tzinfo=datetime.timezone.utc)
+>>>
